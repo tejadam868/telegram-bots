@@ -15,6 +15,7 @@ export default async (req: NowRequest, res: NowResponse) => {
   console.log("inputPoints", inputPoints);
   console.log("sender", sender);
   console.log("recipient", recipient);
+  console.log("blah");
 
   res.status(200).send("ok");
 };
