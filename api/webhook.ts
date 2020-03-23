@@ -127,7 +127,7 @@ async function handleListPoints(
     text: topUsers
       .map(
         (u, i) =>
-          `${i + 1}. ${getDisplayName(u)} - ${topPoints[i].get("points")}`
+          `${i + 1}: ${getDisplayName(u)} (${topPoints[i].get("points")})`
       )
       .join("\n")
   };
@@ -237,5 +237,5 @@ async function getUser(
     `https://api.telegram.org/bot${process.env.BOT_TOKEN}/getChatMember?${params}`
   );
   const { result } = await response.json();
-  return result;
+  return result.user;
 }
