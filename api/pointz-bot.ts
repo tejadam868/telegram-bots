@@ -18,6 +18,12 @@ type TelegramActionResponse = {
 
 export default async (req: NowRequest, res: NowResponse) => {
   const update: Update = req.body;
+
+  if (!req.body) {
+    res.status(200).send("ok");
+    return;
+  }
+
   const message = update.message;
 
   if (!message) {
