@@ -1,4 +1,5 @@
 {
+  "routes": [],
   "env": {
     "BOT_TOKEN": "@pointz-bot-token"
   }
