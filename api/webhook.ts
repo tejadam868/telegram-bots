@@ -7,15 +7,21 @@ const { telegram } = new Telegraf(process.env.BOT_TOKEN as string);
 export default async (req: NowRequest, res: NowResponse) => {
   const update: Update = req.body;
   const chatId = update.message?.chat.id;
-  const inputPoints = update.message?.text;
-  const sender = update?.message?.from;
-  const recipient = update?.message?.reply_to_message?.from;
 
   console.log("update", update);
-  console.log("chatId", chatId);
-  console.log("inputPoints", inputPoints);
-  console.log("sender", sender);
-  console.log("recipient", recipient);
+  console.log("entities", update.message?.entities);
 
-  res.status(200).send("ok");
+  if (!chatId) {
+    return;
+  }
+
+  res.setHeader("Content-Type", "application/json");
+
+  res.send(
+    JSON.stringify({
+      method: "sendMessage",
+      chat_id: chatId,
+      text: `Message received! ${update.message?.text}`
+    })
+  );
 };
