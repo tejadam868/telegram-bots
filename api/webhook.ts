@@ -21,11 +21,18 @@ export default async (req: NowRequest, res: NowResponse) => {
   const message = update.message;
 
   if (!message) {
-    console.log(update);
-    throw new Error("Update received with no message");
+    console.error("Update received with no message", update);
+    res.status(200).send("ok");
+    return;
   }
 
-  const response = await handleMessage(message);
+  let response;
+
+  try {
+    response = await handleMessage(message);
+  } catch (err) {
+    console.error("Failed to handle message", err, message);
+  }
 
   // Return any response to telegram since they may include actions.
   if (response) {
