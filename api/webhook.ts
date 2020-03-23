@@ -1,27 +1,39 @@
 import { NowRequest, NowResponse } from "@now/node";
-import Telegraf from "telegraf";
 import { Update } from "telegraf/typings/telegram-types";
-
-const { telegram } = new Telegraf(process.env.BOT_TOKEN as string);
 
 export default async (req: NowRequest, res: NowResponse) => {
   const update: Update = req.body;
   const chatId = update.message?.chat.id;
-
-  console.log("update", update);
-  console.log("entities", update.message?.entities);
+  const messageId = update.message?.message_id;
 
   if (!chatId) {
-    return;
+    throw new Error("Update provided with no chat ID");
   }
 
-  res.setHeader("Content-Type", "application/json");
+  if (!messageId) {
+    throw new Error("Update provided with no message ID");
+  }
 
+  const response = await handleUpdate(req.body);
+
+  res.setHeader("Content-Type", "application/json");
   res.send(
     JSON.stringify({
       method: "sendMessage",
       chat_id: chatId,
-      text: `Message received! ${update.message?.text}`
+      reply_to_message_id: messageId,
+      text: response
     })
   );
 };
+
+async function handleUpdate(update: Update): Promise<string> {
+  console.log("update", update);
+  console.log("entities", update.message?.entities);
+
+  const sender = update.message?.from;
+  const recipient = update.message?.reply_to_message?.from;
+  const amount = parseInt(update.message?.text ?? "", 10);
+
+  return `${sender?.username} send ${recipient?.username} ${amount} points`;
+}
