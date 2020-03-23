@@ -44,14 +44,14 @@ async function handleUpdate(chatId: number, update: Update): Promise<string> {
     return `You can't give points to yourself lol.`;
   }
 
-  const record = await setPointsForUser(
+  const record = await assignPointsToUser(
     String(chatId),
     String(recipient?.id),
     amount
   );
 
   const totalPoints = record.get("points");
-  const pointLabel = totalPoints === 1 ? "points" : "point";
+  const pointLabel = totalPoints === 1 ? "point" : "points";
 
   return `${recipient?.username} has ${totalPoints} ${pointLabel}!`;
 }
@@ -59,7 +59,7 @@ async function handleUpdate(chatId: number, update: Update): Promise<string> {
 const table = airtable.base("app3AKqySx0bYlNue");
 const pointsTable = table<PointsRecord>("points");
 
-async function setPointsForUser(
+async function assignPointsToUser(
   chatId: string,
   userId: string,
   points: number
@@ -69,7 +69,7 @@ async function setPointsForUser(
   record.set("points", newPoints);
 
   return new Promise((res, rej) =>
-    record.save((err, record) => {
+    record.save((err, _) => {
       if (err) {
         rej(err);
       } else {
