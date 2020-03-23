@@ -4,8 +4,6 @@ import Telegraf from "telegraf";
 const { telegram } = new Telegraf(process.env.BOT_TOKEN as string);
 
 export default async (req: NowRequest, res: NowResponse) => {
-  const update = JSON.parse(req.body);
-  console.log(update);
-
+  console.log(req.body);
   res.status(200).send("ok");
 };
