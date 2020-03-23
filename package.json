@@ -6,6 +6,7 @@
   "author": "Joe Porpeglia <josephp@spotify.com>",
   "license": "MIT",
   "dependencies": {
+    "@now/node": "^1.4.1",
     "node-fetch": "^2.6.0",
     "telegraf": "^3.36.0",
     "typescript": "^3.8.3"
