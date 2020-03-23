@@ -33,7 +33,8 @@ async function handleUpdate(update: Update): Promise<string> {
 
   const sender = update.message?.from;
   const recipient = update.message?.reply_to_message?.from;
-  const amount = parseInt(update.message?.text ?? "", 10);
+  const text = update.message?.text ?? "";
+  const amount = parseInt(text.replace("@pointz_bot ", "") ?? "", 10) || 0;
 
   return `${sender?.username} send ${recipient?.username} ${amount} points`;
 }
