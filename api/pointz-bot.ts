@@ -242,7 +242,7 @@ async function getUser(
   params.set("chat_id", String(chatId));
   params.set("user_id", String(userId));
   const response = await fetch(
-    `https://api.telegram.org/bot${process.env.BOT_TOKEN}/getChatMember?${params}`
+    `https://api.telegram.org/bot${process.env.POINTZ_BOT_TOKEN}/getChatMember?${params}`
   );
   const { result } = await response.json();
   return result.user;

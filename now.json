@@ -1,7 +1,7 @@
 {
   "redirects": [{ "source": "/", "destination": "https://t.me/pointz_bot" }],
   "env": {
-    "BOT_TOKEN": "@pointz-bot-token",
+    "POINTZ_BOT_TOKEN": "@pointz-bot-token",
     "AIRTABLE_API_KEY": "@airtable-api-key"
   }
 }
