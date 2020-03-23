@@ -11,11 +11,11 @@ export default async (req: NowRequest, res: NowResponse) => {
   const sender = update?.message?.from;
   const recipient = update?.message?.reply_to_message?.from;
 
+  console.log("update", update);
   console.log("chatId", chatId);
   console.log("inputPoints", inputPoints);
   console.log("sender", sender);
   console.log("recipient", recipient);
-  console.log("blah");
 
   res.status(200).send("ok");
 };
