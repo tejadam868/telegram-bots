@@ -1,0 +1,16 @@
+{
+  "name": "telegram-pointz-bot",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "repository": "git@github.com:joeporpeglia/telegram-pointz-bot.git",
+  "author": "Joe Porpeglia <josephp@spotify.com>",
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^2.6.0",
+    "telegraf": "^3.36.0",
+    "typescript": "^3.8.3"
+  },
+  "devDependencies": {
+    "@types/node-fetch": "^2.5.5"
+  }
+}
