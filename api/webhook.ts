@@ -1,5 +1,5 @@
 import { NowRequest, NowResponse } from "@now/node";
-import { Update, Message } from "telegraf/typings/telegram-types";
+import { Update, Message, User } from "telegraf/typings/telegram-types";
 import * as airtable from "airtable";
 
 type PointsRecord = {
@@ -54,6 +54,10 @@ async function handleAssignPoints(message: Message) {
     return `You can't give points to yourself lol.`;
   }
 
+  if (Math.abs(amount) > 10) {
+    return "Nope!";
+  }
+
   const record = await assignPointsToUser(
     String(message.chat.id),
     String(recipient?.id),
@@ -63,7 +67,9 @@ async function handleAssignPoints(message: Message) {
   const totalPoints = record.get("points");
   const pointLabel = totalPoints === 1 ? "point" : "points";
 
-  const response = `${recipient?.username} has ${totalPoints} ${pointLabel}!`;
+  const response = `${getDisplayName(
+    recipient
+  )} has ${totalPoints} ${pointLabel}!`;
 
   return {
     method: "sendMessage",
@@ -71,6 +77,14 @@ async function handleAssignPoints(message: Message) {
     reply_to_message_id: message.message_id,
     text: response
   };
+}
+
+function getDisplayName(user?: User) {
+  if (!user) {
+    return "Unknown";
+  }
+
+  return user.first_name ?? user.username;
 }
 
 const table = airtable.base("app3AKqySx0bYlNue");
