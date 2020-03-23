@@ -1,6 +1,7 @@
 {
   "routes": [],
   "env": {
-    "BOT_TOKEN": "@pointz-bot-token"
+    "BOT_TOKEN": "@pointz-bot-token",
+    "AIRTABLE_API_KEY": "@airtable-api-key"
   }
 }
