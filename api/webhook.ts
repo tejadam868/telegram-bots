@@ -1,5 +1,5 @@
 import { NowRequest, NowResponse } from "@now/node";
-import { Update } from "telegraf/typings/telegram-types";
+import { Update, Message } from "telegraf/typings/telegram-types";
 import * as airtable from "airtable";
 
 type PointsRecord = {
@@ -10,42 +10,52 @@ type PointsRecord = {
 
 export default async (req: NowRequest, res: NowResponse) => {
   const update: Update = req.body;
-  const chatId = update.message?.chat.id;
-  const messageId = update.message?.message_id;
+  const message = update.message;
 
-  if (!chatId) {
-    throw new Error("Update provided with no chat ID");
+  if (!message?.text?.startsWith("@pointz_bot ")) {
+    return res.status(200).send("ok");
   }
 
-  if (!messageId) {
-    throw new Error("Update provided with no message ID");
-  }
-
-  const response = await handleUpdate(chatId, req.body);
-
+  const response = await handleMessage(message);
   res.setHeader("Content-Type", "application/json");
-  res.send(
-    JSON.stringify({
-      method: "sendMessage",
-      chat_id: chatId,
-      reply_to_message_id: messageId,
-      text: response
-    })
-  );
+  res.send(JSON.stringify(response));
 };
 
-async function handleUpdate(chatId: number, update: Update): Promise<string> {
-  const sender = update.message?.from;
-  const recipient = update.message?.reply_to_message?.from;
-  const text = update.message?.text ?? "";
-  const amount = parseInt(text.replace("@pointz_bot ", "") ?? "", 10) || 0;
+async function handleMessage(message: Message) {
+  if (shouldAssignPoints(message)) {
+    return handleAssignPoints(message);
+  }
+
+  //   if (shouldListPoints(message)) {
+  //     return handleListPoints(message);
+  //   }
+
+  return;
+}
+
+function shouldAssignPoints(message: Message) {
+  return (
+    message.reply_to_message != null &&
+    Number.isInteger(parsePointAmount(message.text ?? ""))
+  );
+}
+
+function parsePointAmount(text: string) {
+  return parseInt(text.replace("@pointz_bot ", ""), 10);
+}
+
+async function handleAssignPoints(message: Message) {
+  const sender = message.from;
+  const recipient = message.reply_to_message?.from;
+  const text = message.text ?? "";
+  const amount = parsePointAmount(text) || 0;
 
   if (sender?.id === recipient?.id && amount > 0) {
     return `You can't give points to yourself lol.`;
   }
 
   const record = await assignPointsToUser(
-    String(chatId),
+    String(message.chat.id),
     String(recipient?.id),
     amount
   );
@@ -53,7 +63,14 @@ async function handleUpdate(chatId: number, update: Update): Promise<string> {
   const totalPoints = record.get("points");
   const pointLabel = totalPoints === 1 ? "point" : "points";
 
-  return `${recipient?.username} has ${totalPoints} ${pointLabel}!`;
+  const response = `${recipient?.username} has ${totalPoints} ${pointLabel}!`;
+
+  return {
+    method: "sendMessage",
+    chat_id: message.chat.id,
+    reply_to_message_id: message.message_id,
+    text: response
+  };
 }
 
 const table = airtable.base("app3AKqySx0bYlNue");
