@@ -21,6 +21,7 @@ export default async (req: NowRequest, res: NowResponse) => {
   const message = update.message;
 
   if (!message) {
+    console.log(update);
     throw new Error("Update received with no message");
   }
 
