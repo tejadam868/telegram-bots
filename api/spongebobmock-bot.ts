@@ -1,6 +1,6 @@
 import { NowRequest, NowResponse } from "@now/node";
 import fetch from "node-fetch";
-import * as FormData from "form-data";
+import FormData from "form-data";
 import { Update, Message } from "telegraf/typings/telegram-types";
 
 type SendMessageMethod = {
