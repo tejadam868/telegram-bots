@@ -2,6 +2,9 @@
   "redirects": [{ "source": "/", "destination": "https://t.me/pointz_bot" }],
   "env": {
     "POINTZ_BOT_TOKEN": "@pointz-bot-token",
-    "AIRTABLE_API_KEY": "@airtable-api-key"
+    "SPONGEBOBMOCK_BOT_TOKEN": "@spongebobmock-bot-token",
+    "AIRTABLE_API_KEY": "@airtable-api-key",
+    "IMGFLIP_USERNAME": "@imgflip-username",
+    "IMGFLIP_PASSWORD": "@imgflip-password"
   }
 }
