@@ -95,7 +95,7 @@ async function handleAssignPoints(
   let response;
 
   if (sender?.id === recipient?.id && amount > 0) {
-    response = `You can't give points to yourself lol.`;
+    response = `You can't give points to yourself lol`;
   } else if (Math.abs(amount) > 10) {
     response = "Nope!";
   } else {
@@ -108,7 +108,9 @@ async function handleAssignPoints(
     const totalPoints = record.get("points");
     const pointLabel = totalPoints === 1 ? "point" : "points";
 
-    response = `${getDisplayName(recipient)} has ${totalPoints} ${pointLabel}!`;
+    response = `${getDisplayName(recipient)} has ${totalPoints} ${pointLabel} ${
+      amount > 0 ? "📈" : "📉"
+    }`;
   }
 
   return {
@@ -141,7 +143,9 @@ async function handleListPoints(
     text: topUsers
       .map(
         (u, i) =>
-          `${i + 1}: ${getDisplayName(u)} (${topPoints[i].get("points")})`
+          `${i === 0 ? "🥇" : i === 2 ? "🥈" : "🥉"}: ${getDisplayName(
+            u
+          )} (${topPoints[i].get("points")})`
       )
       .join("\n")
   };
