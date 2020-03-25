@@ -1,6 +1,7 @@
 {
   "name": "telegram-pointz-bot",
   "version": "1.0.0",
+  "main": "index.ts",
   "repository": "git@github.com:joeporpeglia/telegram-pointz-bot.git",
   "author": "Joe Porpeglia <josephp@spotify.com>",
   "license": "MIT",
