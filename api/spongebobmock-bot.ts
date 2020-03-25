@@ -1,72 +1,33 @@
-import { NowRequest, NowResponse } from "@now/node";
 import fetch from "node-fetch";
 import FormData from "form-data";
-import { Update, Message } from "telegraf/typings/telegram-types";
+import { createWebhook } from "../telegram/TelegramApi";
 
-type SendMessageMethod = {
-  method: "sendMessage";
-  chat_id: number;
-  reply_to_message_id?: number;
-  text: string;
+type ImgFlipCaptionSuccess = {
+  success: true;
+  data: {
+    url: string;
+    page_url: string;
+  };
 };
 
-type SendPhotoMethod = {
-  method: "sendPhoto";
-  chat_id: number;
-  reply_to_message_id?: number;
-  photo: string;
+type ImgFlipCaptionFailure = {
+  success: false;
+  error_message: string;
 };
 
-type TelegramMethod = SendMessageMethod | SendPhotoMethod;
+type ImgFlipResponse = ImgFlipCaptionFailure | ImgFlipCaptionSuccess;
 
-type ImgFlipResponse =
-  | {
-      success: true;
-      data: {
-        url: string;
-        page_url: string;
-      };
-    }
-  | {
-      success: false;
-      error_message: string;
-    };
-
-export default async (req: NowRequest, res: NowResponse) => {
-  let response;
-
-  try {
-    response = await handleUpdate(req.body);
-  } catch (err) {
-    console.error("Failed to handle request", err, req.body);
-  }
-
-  // Return any response to telegram since they may include actions.
-  if (response) {
-    res.setHeader("Content-Type", "application/json");
-    res.send(JSON.stringify(response));
-    return;
-  }
-
-  res.status(200).send("");
-};
-
-async function handleUpdate(update?: Update): Promise<TelegramMethod | void> {
-  if (!update) {
-    return;
-  }
-
-  if (!update || !update.message) {
-    console.error("Update received with no message", update);
-    return;
+export default createWebhook(async update => {
+  if (!update.message) {
+    return null;
   }
 
   const message = update.message;
   const parent = message.reply_to_message;
 
-  // Ignore everything except mentions
+  // Ignore everything except mentions as replies
   if (message.text !== "@spongebobmock_bot" || !parent || !parent.text) {
-    return;
+    return null;
   }
 
   const form = new FormData();
@@ -84,7 +45,7 @@ async function handleUpdate(update?: Update): Promise<TelegramMethod | void> {
 
   if (!response.success) {
     console.error(response);
-    return;
+    return null;
   }
 
   return {
@@ -93,7 +54,7 @@ async function handleUpdate(update?: Update): Promise<TelegramMethod | void> {
     reply_to_message_id: message.reply_to_message?.message_id,
     photo: response.data.url
   };
-}
+});
 
 function spongebobCase(text: string) {
   const bobbed = [];
