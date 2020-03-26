@@ -49,6 +49,11 @@ async function handleAssignPoints(message: Message): Promise<WebhookResponse> {
     response = `You can't give points to yourself lol`;
   } else if (Math.abs(amount) > 10) {
     response = "Nope!";
+  } else if (
+    Math.abs(amount) === 10 &&
+    sender?.first_name.toLowerCase() === "shannon"
+  ) {
+    response = "Lol calm down Shannon";
   } else {
     const record = await assignPointsToUser(
       message.chat.id,
