@@ -4,7 +4,10 @@ import {
   WebhookResponse,
   getUser,
 } from "../telegram/TelegramApi";
-import { assignPointsToUser, getTopThreePoints } from "../airtable/PointsTable";
+import {
+  assignPointsToUser,
+  getPointsLeaderboard,
+} from "../airtable/PointsTable";
 
 export default createWebhook(async (update) => {
   const message = update.message;
@@ -80,20 +83,20 @@ async function handleAssignPoints(message: Message): Promise<WebhookResponse> {
 }
 
 async function handleListPoints(message: Message): Promise<WebhookResponse> {
-  const topPoints = await getTopThreePoints(message.chat.id);
-  const topUsers = await Promise.all(
-    topPoints.map((r) => getUser(r.get("chat_id"), r.get("user_id")))
+  const leaderboard = await getPointsLeaderboard(message.chat.id);
+  const leaderboardUsers = await Promise.all(
+    leaderboard.map((r) => getUser(r.get("chat_id"), r.get("user_id")))
   );
 
   return {
     method: "sendMessage",
     chat_id: message.chat.id,
-    text: topUsers
+    text: leaderboardUsers
       .map(
         (u, i) =>
           `${i === 0 ? "🥇" : i === 2 ? "🥈" : "🥉"}: ${getDisplayName(
             u
-          )} (${topPoints[i].get("points")})`
+          )} (${leaderboard[i].get("points")})`
       )
       .join("\n"),
   };

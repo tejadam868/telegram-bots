@@ -29,15 +29,14 @@ export async function assignPointsToUser(
   );
 }
 
-export async function getTopThreePoints(
+export async function getPointsLeaderboard(
   chatId: number
 ): Promise<airtable.Record<PointsRecord>[]> {
   return new Promise((res, rej) => {
     pointsTable
       .select({
         filterByFormula: `{chat_id} = ${chatId}`,
-        pageSize: 3,
-        sort: [{ field: "points", direction: "desc" }]
+        sort: [{ field: "points", direction: "desc" }],
       })
       .firstPage(async (err, records) => {
         if (err) {
@@ -58,7 +57,7 @@ export async function getPointsRecordForUser(
     pointsTable
       .select({
         filterByFormula: `AND({chat_id} = ${chatId}, {user_id} = ${userId})`,
-        pageSize: 1
+        pageSize: 1,
       })
       .firstPage(async (err, records) => {
         if (err) {
@@ -84,9 +83,9 @@ export async function createPointsRecord(
           fields: {
             chat_id: chatId,
             user_id: userId,
-            points: initialPoints
-          }
-        }
+            points: initialPoints,
+          },
+        },
       ],
       (err, records) => {
         if (err) {
