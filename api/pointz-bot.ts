@@ -92,22 +92,34 @@ async function handleListPoints(message: Message): Promise<WebhookResponse> {
     method: "sendMessage",
     chat_id: message.chat.id,
     text: leaderboardUsers
-      .filter((u) => u != null)
       .map(
         (u, i) =>
-          `${i === 0 ? "🥇" : i === 2 ? "🥈" : "🥉"}: ${getDisplayName(
-            u
-          )} (${leaderboard[i].get("points")})`
+          `${leaderboardIcon(i)}: ${getDisplayName(u)} (${leaderboard[i].get(
+            "points"
+          )})`
       )
       .join("\n"),
   };
+}
+
+function leaderboardIcon(i: number) {
+  switch (i) {
+    case 0:
+      return "🥇";
+    case 1:
+      return "🥈";
+    case 2:
+      return "🥉";
+    default:
+      return "💀";
+  }
 }
 
 function parsePointAmount(text: string) {
   return parseInt(text.replace("@pointz_bot ", ""), 10);
 }
 
-function getDisplayName(user?: User) {
+function getDisplayName(user: User | null = null) {
   if (!user) {
     return "Unknown";
   }
