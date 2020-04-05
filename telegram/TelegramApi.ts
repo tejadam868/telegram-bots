@@ -51,13 +51,19 @@ export function createWebhook(handleUpdate: Webhook) {
 export async function getUser(
   chatId: number,
   userId: number
-): Promise<User | undefined> {
+): Promise<User | null> {
   const params = new URLSearchParams();
   params.set("chat_id", String(chatId));
   params.set("user_id", String(userId));
   const response = await fetch(
     `https://api.telegram.org/bot${process.env.POINTZ_BOT_TOKEN}/getChatMember?${params}`
   );
-  const { result } = await response.json();
+  const { result, ok, description } = await response.json();
+
+  if (!ok) {
+    console.error(description);
+    return null;
+  }
+
   return result.user;
 }

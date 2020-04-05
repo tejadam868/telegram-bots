@@ -92,6 +92,7 @@ async function handleListPoints(message: Message): Promise<WebhookResponse> {
     method: "sendMessage",
     chat_id: message.chat.id,
     text: leaderboardUsers
+      .filter((u) => u != null)
       .map(
         (u, i) =>
           `${i === 0 ? "🥇" : i === 2 ? "🥈" : "🥉"}: ${getDisplayName(
