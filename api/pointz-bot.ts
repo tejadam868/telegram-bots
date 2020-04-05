@@ -2,11 +2,11 @@ import { Message, User } from "telegraf/typings/telegram-types";
 import {
   createWebhook,
   WebhookResponse,
-  getUser
+  getUser,
 } from "../telegram/TelegramApi";
 import { assignPointsToUser, getTopThreePoints } from "../airtable/PointsTable";
 
-export default createWebhook(async update => {
+export default createWebhook(async (update) => {
   const message = update.message;
 
   if (!message || !message.text?.startsWith("@pointz_bot ")) {
@@ -20,6 +20,8 @@ export default createWebhook(async update => {
   if (shouldListPoints(message)) {
     return handleListPoints(message);
   }
+
+  console.log("Message ignored", JSON.stringify(message, null, 2));
 
   return null;
 });
@@ -73,14 +75,14 @@ async function handleAssignPoints(message: Message): Promise<WebhookResponse> {
     method: "sendMessage",
     chat_id: message.chat.id,
     reply_to_message_id: message.message_id,
-    text: response
+    text: response,
   };
 }
 
 async function handleListPoints(message: Message): Promise<WebhookResponse> {
   const topPoints = await getTopThreePoints(message.chat.id);
   const topUsers = await Promise.all(
-    topPoints.map(r => getUser(r.get("chat_id"), r.get("user_id")))
+    topPoints.map((r) => getUser(r.get("chat_id"), r.get("user_id")))
   );
 
   return {
@@ -93,7 +95,7 @@ async function handleListPoints(message: Message): Promise<WebhookResponse> {
             u
           )} (${topPoints[i].get("points")})`
       )
-      .join("\n")
+      .join("\n"),
   };
 }
 
