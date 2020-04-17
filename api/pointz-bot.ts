@@ -42,7 +42,9 @@ function shouldListPoints(message: Message) {
   );
 }
 
-async function handleAssignPoints(message: Message): Promise<WebhookResponse> {
+async function handleAssignPoints(
+  message: Message
+): Promise<WebhookResponse | null> {
   const sender = message.from;
   const recipient = message.reply_to_message?.from;
   const text = message.text ?? "";
@@ -65,13 +67,10 @@ async function handleAssignPoints(message: Message): Promise<WebhookResponse> {
       recipient?.id as number,
       amount
     );
+  }
 
-    const totalPoints = record.get("points");
-    const pointLabel = totalPoints === 1 ? "point" : "points";
-
-    response = `${getDisplayName(recipient)} has ${totalPoints} ${pointLabel} ${
-      amount > 0 ? "📈" : "📉"
-    }`;
+  if (!response) {
+    return null;
   }
 
   return {
