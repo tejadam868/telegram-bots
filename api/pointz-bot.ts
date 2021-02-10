@@ -90,14 +90,7 @@ async function handleListPoints(message: Message): Promise<WebhookResponse> {
   return {
     method: "sendMessage",
     chat_id: message.chat.id,
-    text: leaderboardUsers
-      .map(
-        (u, i) =>
-          `${leaderboardIcon(i)}: ${getDisplayName(u)} (${leaderboard[i].get(
-            "points"
-          )})`
-      )
-      .join("\n"),
+    text: `${leaderboardIcon(0)}: MIGUEL OWNS THIS BITCH: 1000000 POINTSZ`,
   };
 }
 
